@@ -8,18 +8,26 @@ const drop = $('drop'), fileInput = $('file'), list = $('filelist'), go = $('go'
 
 const TITLES = {
   merge: ['Merge PDF files', 'Combine multiple PDFs into one — free, no sign-up, no watermark. Your files never leave this browser tab.'],
-  split: ['Split a PDF', 'Extract page ranges or burst every page into its own file — free, private, on-device.']
+  split: ['Split a PDF', 'Extract page ranges or burst every page into its own file — free, private, on-device.'],
+  jpg: ['JPG to PDF', 'Turn JPG/PNG images into a single PDF — free, on-device, no upload. Drag images in any order.']
 };
 
-document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
-  mode = t.dataset.mode;
-  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
-  $('title').textContent = TITLES[mode][0];
-  $('subtitle').textContent = TITLES[mode][1];
-  $('range-wrap').style.display = mode === 'split' ? 'block' : 'none';
-  fileInput.multiple = mode === 'merge';
+// 支持 ?tab=jpg 直达某个工具（SEO 落地页跳转用）
+const initMode = new URLSearchParams(location.search).get('tab');
+if (initMode && TITLES[initMode]) mode = initMode;
+
+function setMode(m) {
+  mode = m;
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x.dataset.mode === m));
+  $('title').textContent = TITLES[m][0];
+  $('subtitle').textContent = TITLES[m][1];
+  $('range-wrap').style.display = m === 'split' ? 'block' : 'none';
+  fileInput.multiple = m !== 'split';
+  fileInput.accept = m === 'jpg' ? 'image/jpeg,image/png' : 'application/pdf';
+  files = [];
   refresh();
-});
+}
+document.querySelectorAll('.tab').forEach(t => t.onclick = () => setMode(t.dataset.mode));
 
 drop.onclick = () => fileInput.click();
 drop.ondragover = e => { e.preventDefault(); drop.classList.add('over'); };
@@ -27,10 +35,15 @@ drop.ondragleave = () => drop.classList.remove('over');
 drop.ondrop = e => { e.preventDefault(); drop.classList.remove('over'); addFiles(e.dataTransfer.files); };
 fileInput.onchange = () => { addFiles(fileInput.files); fileInput.value = ''; };
 
+const isImgMode = () => mode === 'jpg';
+const acceptFile = f => isImgMode()
+  ? (f.type === 'image/jpeg' || f.type === 'image/png' || /\.(jpe?g|png)$/i.test(f.name))
+  : (f.type === 'application/pdf' || /\.pdf$/i.test(f.name));
+
 async function addFiles(fl) {
   for (const f of fl) {
-    if (f.type !== 'application/pdf' && !f.name.toLowerCase().endsWith('.pdf')) continue;
-    files.push({ name: f.name, bytes: await f.arrayBuffer() });
+    if (!acceptFile(f)) continue;
+    files.push({ name: f.name, bytes: await f.arrayBuffer(), type: f.type });
   }
   refresh();
 }
@@ -96,11 +109,26 @@ async function split() {
   return { name: `pages-${range.replace(/\s/g, '')}.pdf`, bytes: await out.save() };
 }
 
+async function img2pdf() {
+  const out = await PDFDocument.create();
+  for (const f of files) {
+    const bmp = await createImageBitmap(new Blob([f.bytes]));
+    const emb = /png/.test(f.type) || /\.png$/i.test(f.name)
+      ? await out.embedPng(f.bytes) : await out.embedJpg(f.bytes);
+    const page = out.addPage([bmp.width, bmp.height]);
+    page.drawImage(emb, { x: 0, y: 0, width: bmp.width, height: bmp.height });
+    bmp.close();
+  }
+  return { name: 'images.pdf', bytes: await out.save() };
+}
+
 go.onclick = async () => {
   go.disabled = true;
   say('Processing…', '');
   try {
-    const result = mode === 'merge' ? await merge() : await split();
+    const result = mode === 'merge' ? await merge()
+      : mode === 'jpg' ? await img2pdf()
+      : await split();
     const items = Array.isArray(result) ? result : [result];
     for (const item of items) {
       const url = URL.createObjectURL(new Blob([item.bytes], { type: 'application/pdf' }));
@@ -114,3 +142,6 @@ go.onclick = async () => {
   }
   go.disabled = false;
 };
+
+// 初始化：应用 URL 参数或默认模式
+setMode(mode);
