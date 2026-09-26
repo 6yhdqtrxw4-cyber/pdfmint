@@ -9,7 +9,8 @@ const drop = $('drop'), fileInput = $('file'), list = $('filelist'), go = $('go'
 const TITLES = {
   merge: ['Merge PDF files', 'Combine multiple PDFs into one — free, no sign-up, no watermark. Your files never leave this browser tab.'],
   split: ['Split a PDF', 'Extract page ranges or burst every page into its own file — free, private, on-device.'],
-  jpg: ['JPG to PDF', 'Turn JPG/PNG images into a single PDF — free, on-device, no upload. Drag images in any order.']
+  jpg: ['JPG to PDF', 'Turn JPG/PNG images into a single PDF — free, on-device, no upload. Drag images in any order.'],
+  rotate: ['Rotate PDF', 'Rotate every page of a PDF by 90°, 180° or 270° — free, private, on-device.']
 };
 
 // 支持 ?tab=jpg 直达某个工具（SEO 落地页跳转用）
@@ -22,7 +23,8 @@ function setMode(m) {
   $('title').textContent = TITLES[m][0];
   $('subtitle').textContent = TITLES[m][1];
   $('range-wrap').style.display = m === 'split' ? 'block' : 'none';
-  fileInput.multiple = m !== 'split';
+  $('angle-wrap').style.display = m === 'rotate' ? 'block' : 'none';
+  fileInput.multiple = m !== 'split' && m !== 'rotate';
   fileInput.accept = m === 'jpg' ? 'image/jpeg,image/png' : 'application/pdf';
   files = [];
   refresh();
@@ -109,6 +111,17 @@ async function split() {
   return { name: `pages-${range.replace(/\s/g, '')}.pdf`, bytes: await out.save() };
 }
 
+async function rotatePdf() {
+  const src = await PDFDocument.load(files[0].bytes, { ignoreEncryption: true });
+  const angle = parseInt($('angle').value, 10);
+  if (![90, 180, 270].includes(angle)) throw new Error('Invalid angle');
+  src.getPages().forEach(p => {
+    const cur = p.getRotation().angle || 0;
+    p.setRotation(PDFLib.degrees((cur + angle) % 360));
+  });
+  return { name: `${files[0].name.replace(/\.pdf$/i, '')}-rotated-${angle}.pdf`, bytes: await src.save() };
+}
+
 async function img2pdf() {
   const out = await PDFDocument.create();
   for (const f of files) {
@@ -128,6 +141,7 @@ go.onclick = async () => {
   try {
     const result = mode === 'merge' ? await merge()
       : mode === 'jpg' ? await img2pdf()
+      : mode === 'rotate' ? await rotatePdf()
       : await split();
     const items = Array.isArray(result) ? result : [result];
     for (const item of items) {
