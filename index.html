@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PDFMint — Merge & Split PDF Online, Free, No Upload</title>
+<meta name="description" content="Merge and split PDF files entirely in your browser. 100% private — files never leave your device. Free, no sign-up, no watermarks."/>
+<meta name="keywords" content="merge pdf online free, split pdf online free, pdf tools no upload, client side pdf"/>
+<style>
+  :root { --accent:#10b981; --bg:#0f172a; --panel:#1e293b; --text:#e2e8f0; --muted:#94a3b8; --border:#334155; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+  .wrap { max-width:860px; margin:0 auto; padding:24px 20px; }
+  header { display:flex; align-items:center; gap:10px; margin-bottom:28px; }
+  .logo { font-size:22px; font-weight:800; } .logo em { color:var(--accent); font-style:normal; }
+  .badge { font-size:11.5px; background:rgba(16,185,129,.15); color:var(--accent); padding:3px 10px; border-radius:999px; font-weight:600; }
+  h1 { font-size:26px; margin-bottom:6px; }
+  .sub { color:var(--muted); font-size:14.5px; margin-bottom:24px; }
+  .tabs { display:flex; gap:8px; margin-bottom:20px; }
+  .tab { padding:9px 20px; border-radius:10px; border:1px solid var(--border); background:var(--panel); color:var(--muted); cursor:pointer; font-size:14.5px; font-weight:600; }
+  .tab.active { color:var(--text); border-color:var(--accent); background:rgba(16,185,129,.1); }
+  .panel { background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:26px; }
+  .drop { border:2px dashed var(--border); border-radius:12px; padding:38px 20px; text-align:center; cursor:pointer; transition:.2s; }
+  .drop:hover, .drop.over { border-color:var(--accent); background:rgba(16,185,129,.05); }
+  .drop .big { font-size:34px; margin-bottom:8px; }
+  .drop p { color:var(--muted); font-size:14px; }
+  input[type=file] { display:none; }
+  .filelist { margin-top:14px; }
+  .fileitem { display:flex; align-items:center; gap:10px; padding:10px 14px; background:var(--bg); border:1px solid var(--border); border-radius:10px; margin-bottom:8px; font-size:13.5px; }
+  .fileitem .name { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .fileitem .rm { cursor:pointer; color:#f87171; font-weight:700; }
+  .fileitem .up, .fileitem .dn { cursor:pointer; color:var(--muted); font-weight:700; padding:0 4px; }
+  label { display:block; font-size:13.5px; color:var(--muted); margin:18px 0 8px; }
+  input[type=text] { width:100%; padding:11px 14px; border-radius:10px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:14px; }
+  .btn { width:100%; margin-top:20px; padding:14px; border:none; border-radius:10px; background:var(--accent); color:#052e1b; font-size:15.5px; font-weight:800; cursor:pointer; }
+  .btn:disabled { opacity:.4; cursor:not-allowed; }
+  .note { font-size:12.5px; color:var(--muted); margin-top:10px; text-align:center; }
+  #msg { margin-top:14px; font-size:14px; text-align:center; min-height:20px; }
+  .ok { color:var(--accent); } .err { color:#f87171; }
+  footer { text-align:center; color:var(--muted); font-size:12.5px; margin-top:36px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">PDF<em>Mint</em></div>
+    <div class="badge">🔒 100% on-device · no upload</div>
+  </header>
+
+  <h1 id="title">Merge PDF files</h1>
+  <p class="sub" id="subtitle">Combine multiple PDFs into one — free, no sign-up, no watermark. Your files never leave this browser tab.</p>
+
+  <div class="tabs">
+    <button class="tab active" data-mode="merge">Merge PDF</button>
+    <button class="tab" data-mode="split">Split PDF</button>
+  </div>
+
+  <div class="panel">
+    <div class="drop" id="drop">
+      <div class="big">📄</div>
+      <p><strong>Drop PDF files here</strong> or click to browse</p>
+      <input type="file" id="file" accept="application/pdf" multiple/>
+    </div>
+    <div class="filelist" id="filelist"></div>
+
+    <div id="range-wrap" style="display:none">
+      <label>Pages to keep (e.g. <code>1-3, 5, 8-12</code>) — empty = split every page into its own file</label>
+      <input type="text" id="range" placeholder="1-3, 5, 8-12"/>
+    </div>
+
+    <button class="btn" id="go" disabled>Process → Download</button>
+    <div id="msg"></div>
+    <p class="note">Runs on pdf-lib · works offline once loaded · GPLv3 engine</p>
+  </div>
+
+  <footer>PDFMint v0.1 — privacy-first PDF tools · more tools coming: compress, rotate, protect</footer>
+</div>
+<script src="vendor/pdf-lib.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
