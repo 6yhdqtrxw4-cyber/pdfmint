@@ -10,7 +10,8 @@ const TITLES = {
   merge: ['Merge PDF files', 'Combine multiple PDFs into one — free, no sign-up, no watermark. Your files never leave this browser tab.'],
   split: ['Split a PDF', 'Extract page ranges or burst every page into its own file — free, private, on-device.'],
   jpg: ['JPG to PDF', 'Turn JPG/PNG images into a single PDF — free, on-device, no upload. Drag images in any order.'],
-  rotate: ['Rotate PDF', 'Rotate every page of a PDF by 90°, 180° or 270° — free, private, on-device.']
+  rotate: ['Rotate PDF', 'Rotate every page of a PDF by 90°, 180° or 270° — free, private, on-device.'],
+  delete: ['Delete PDF pages', 'Remove unwanted pages from a PDF — free, private, on-device. Pages you keep stay byte-identical.']
 };
 
 // 支持 ?tab=jpg 直达某个工具（SEO 落地页跳转用）
@@ -24,7 +25,8 @@ function setMode(m) {
   $('subtitle').textContent = TITLES[m][1];
   $('range-wrap').style.display = m === 'split' ? 'block' : 'none';
   $('angle-wrap').style.display = m === 'rotate' ? 'block' : 'none';
-  fileInput.multiple = m !== 'split' && m !== 'rotate';
+  $('del-wrap').style.display = m === 'delete' ? 'block' : 'none';
+  fileInput.multiple = m === 'merge' || m === 'jpg';
   fileInput.accept = m === 'jpg' ? 'image/jpeg,image/png' : 'application/pdf';
   files = [];
   refresh();
@@ -122,6 +124,21 @@ async function rotatePdf() {
   return { name: `${files[0].name.replace(/\.pdf$/i, '')}-rotated-${angle}.pdf`, bytes: await src.save() };
 }
 
+async function deletePages() {
+  const src = await PDFDocument.load(files[0].bytes, { ignoreEncryption: true });
+  const max = src.getPageCount();
+  const range = $('delrange').value.trim();
+  const toDelete = parseRange(range, max);
+  if (!range || !toDelete || !toDelete.length) throw new Error('Invalid page range');
+  if (toDelete.length >= max) throw new Error('Cannot delete every page — at least one page must remain');
+  const delSet = new Set(toDelete);
+  const keep = src.getPageIndices().filter(i => !delSet.has(i + 1));
+  const out = await PDFDocument.create();
+  const copied = await out.copyPages(src, keep);
+  copied.forEach(p => out.addPage(p));
+  return { name: `${files[0].name.replace(/\.pdf$/i, '')}-pages-deleted.pdf`, bytes: await out.save() };
+}
+
 async function img2pdf() {
   const out = await PDFDocument.create();
   for (const f of files) {
@@ -142,6 +159,7 @@ go.onclick = async () => {
     const result = mode === 'merge' ? await merge()
       : mode === 'jpg' ? await img2pdf()
       : mode === 'rotate' ? await rotatePdf()
+      : mode === 'delete' ? await deletePages()
       : await split();
     const items = Array.isArray(result) ? result : [result];
     for (const item of items) {
