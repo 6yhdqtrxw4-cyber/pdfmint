@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PDFMint — Free PDF Merge & Split, No Upload, No Sign-up</title>
+<meta name="description" content="Merge and split PDF files for free, entirely in your browser. No file upload, no sign-up, no watermark, no size limits. Privacy-first PDF tools."/>
+<meta property="og:title" content="PDFMint — Privacy-first PDF tools"/>
+<meta property="og:description" content="Merge & split PDFs on-device. Your files never leave your browser."/>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"PDFMint","applicationCategory":"UtilitiesApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free, private, browser-based PDF merge and split tools."}
+</script>
+<style>
+  :root { --accent:#10b981; --bg:#0f172a; --panel:#1e293b; --text:#e2e8f0; --muted:#94a3b8; --border:#334155; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--text); line-height:1.7; }
+  .wrap { max-width:880px; margin:0 auto; padding:0 20px; }
+  nav { display:flex; align-items:center; gap:14px; padding:18px 0; }
+  nav .logo { font-size:19px; font-weight:800; } nav .logo em { color:var(--accent); font-style:normal; }
+  nav .spacer { flex:1; }
+  nav a.cta { padding:9px 20px; border-radius:9px; background:var(--accent); color:#052e1b; font-weight:800; font-size:14px; text-decoration:none; }
+  .hero { text-align:center; padding:70px 20px 46px; background:radial-gradient(ellipse at top, rgba(16,185,129,.12), transparent 60%); }
+  .hero h1 { font-size:36px; line-height:1.3; margin-bottom:14px; }
+  .hero h1 em { color:var(--accent); font-style:normal; }
+  .hero p { color:var(--muted); max-width:540px; margin:0 auto 26px; font-size:16.5px; }
+  .hero a.big { display:inline-block; padding:15px 44px; border-radius:11px; background:var(--accent); color:#052e1b; font-weight:800; font-size:16.5px; text-decoration:none; }
+  .points { display:flex; gap:22px; justify-content:center; flex-wrap:wrap; margin-top:24px; font-size:14px; color:var(--muted); }
+  .points span::before { content:"✓ "; color:var(--accent); font-weight:800; }
+  section { padding:52px 0; }
+  h2 { text-align:center; font-size:25px; margin-bottom:32px; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:18px; }
+  .card { background:var(--panel); border:1px solid var(--border); border-radius:13px; padding:24px; }
+  .card .ic { font-size:25px; margin-bottom:9px; }
+  .card h3 { font-size:16px; margin-bottom:7px; }
+  .card p { font-size:14px; color:var(--muted); }
+  details { border-bottom:1px solid var(--border); padding:16px 4px; }
+  summary { cursor:pointer; font-weight:600; }
+  details p { margin-top:9px; color:var(--muted); font-size:14.5px; }
+  footer { text-align:center; color:var(--muted); font-size:13px; padding:32px 20px; }
+</style>
+</head>
+<body>
+<nav class="wrap">
+  <div class="logo">PDF<em>Mint</em></div>
+  <div class="spacer"></div>
+  <a href="index.html" style="color:var(--muted)">Open tool →</a>
+  <a class="cta" href="index.html">Merge / Split now</a>
+</nav>
+
+<div class="hero">
+  <h1>PDF tools that<br/><em>never see your files</em></h1>
+  <p>Merge and split PDFs entirely on your device. No upload, no server, no sign-up, no watermark, no file-size limits.</p>
+  <a class="big" href="index.html">Start now — it's free</a>
+  <div class="points">
+    <span>100% on-device</span><span>No sign-up</span><span>No watermark</span><span>Works offline</span>
+  </div>
+</div>
+
+<section class="wrap">
+  <h2>Why PDFMint?</h2>
+  <div class="cards">
+    <div class="card"><div class="ic">🔒</div><h3>Private by design</h3><p>Most "free" PDF sites upload your files to their servers. PDFMint runs the full pdf-lib engine in your browser — your documents never leave the tab.</p></div>
+    <div class="card"><div class="ic">⚡</div><h3>No queues, no limits</h3><p>Server-based tools throttle free users. Here, your own CPU does the work — merge a 500-page PDF as fast as your machine allows.</p></div>
+    <div class="card"><div class="ic">🚫</div><h3>No watermark, no account</h3><p>What you download is exactly what you made. No branding stamped on your pages, no email required, no "premium" unlock for basic features.</p></div>
+    <div class="card"><div class="ic">🌐</div><h3>Works offline</h3><p>Once the page loads, you can disconnect from the internet and keep working. Handy for sensitive documents on the go.</p></div>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2>FAQ</h2>
+  <details open><summary>Are my files really not uploaded?</summary><p>Correct. All processing happens inside your browser using a local PDF engine (pdf-lib). You can verify by turning off your internet after the page loads — everything still works.</p></details>
+  <details><summary>Is it really free?</summary><p>Yes. Merge and split are free with no watermarks. Future tools may include an optional Pro tier (batch processing, compression), but the core stays free.</p></details>
+  <details><summary>Is there a file size or page limit?</summary><p>No hard limit — it depends on your device's memory. For typical documents (up to a few hundred pages) it works smoothly.</p></details>
+  <details><summary>Can I rearrange pages while merging?</summary><p>Yes — after adding files you can reorder them, and when splitting you can type any page range like <code>1-3, 5, 8-12</code>.</p></details>
+</section>
+
+<footer>PDFMint — privacy-first PDF tools · built with pdf-lib</footer>
+</body>
+</html>
