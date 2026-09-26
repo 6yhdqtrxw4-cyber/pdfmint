@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>PDFMint — Merge, Split & Rotate PDF Online, Free, No Upload</title>
-<meta name="description" content="Merge, split and rotate PDF files entirely in your browser. 100% private — files never leave your device. Free, no sign-up, no watermarks."/>
-<meta name="keywords" content="merge pdf online free, split pdf online free, rotate pdf online free, pdf tools no upload, client side pdf"/>
+<title>PDFMint — Merge, Split, Rotate & Delete PDF Pages Online, Free, No Upload</title>
+<meta name="description" content="Merge, split, rotate and delete pages from PDF files entirely in your browser. 100% private — files never leave your device. Free, no sign-up, no watermarks."/>
+<meta name="keywords" content="merge pdf online free, split pdf online free, rotate pdf online free, delete pdf pages online free, pdf tools no upload, client side pdf"/>
 <style>
   :root { --accent:#10b981; --bg:#0f172a; --panel:#1e293b; --text:#e2e8f0; --muted:#94a3b8; --border:#334155; }
   * { box-sizing:border-box; margin:0; padding:0; }
@@ -55,6 +55,7 @@
     <button class="tab" data-mode="split">Split PDF</button>
     <button class="tab" data-mode="jpg">JPG to PDF</button>
     <button class="tab" data-mode="rotate">Rotate PDF</button>
+    <button class="tab" data-mode="delete">Delete Pages</button>
   </div>
 
   <div class="panel">
@@ -79,12 +80,17 @@
       </select>
     </div>
 
+    <div id="del-wrap" style="display:none">
+      <label>Pages to delete (e.g. <code>2, 4-6, 9</code>) — all other pages are kept</label>
+      <input type="text" id="delrange" placeholder="2, 4-6, 9"/>
+    </div>
+
     <button class="btn" id="go" disabled>Process → Download</button>
     <div id="msg"></div>
     <p class="note">Runs on pdf-lib · works offline once loaded · GPLv3 engine</p>
   </div>
 
-  <footer>PDFMint v0.3 — privacy-first PDF tools · more tools coming: compress, protect</footer>
+  <footer>PDFMint v0.4 — privacy-first PDF tools · more tools coming: compress, protect</footer>
 </div>
 <script src="vendor/pdf-lib.min.js"></script>
 <script src="app.js"></script>
