@@ -36,8 +36,11 @@ document.querySelectorAll('.tab').forEach(t => t.onclick = () => setMode(t.datas
 drop.onclick = () => fileInput.click();
 drop.ondragover = e => { e.preventDefault(); drop.classList.add('over'); };
 drop.ondragleave = () => drop.classList.remove('over');
-drop.ondrop = e => { e.preventDefault(); drop.classList.remove('over'); addFiles(e.dataTransfer.files); };
-fileInput.onchange = () => { addFiles(fileInput.files); fileInput.value = ''; };
+drop.ondrop = e => { e.preventDefault(); drop.classList.remove('over'); addFiles(Array.from(e.dataTransfer.files)); };
+// NOTE: input.files is a LIVE reference. Snapshot it BEFORE clearing value,
+  // otherwise the async addFiles() below only ever reads the first file and
+  // multi-file merge silently degrades to a single file.
+  fileInput.onchange = () => { const picked = Array.from(fileInput.files); fileInput.value = ''; addFiles(picked); };
 
 const isImgMode = () => mode === 'jpg';
 const acceptFile = f => isImgMode()
